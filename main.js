@@ -169,6 +169,7 @@ const app = {
         }
       }
       song[_this.currentSong].classList.add("active");
+      _this.scrollToActiveSong();
     };
     prevBtn.onclick = () => {
       if (_this.isRandom) _this.playRandomSong();
@@ -212,6 +213,16 @@ const app = {
   activeListSong: function () {
     const song = $$(".song");
     song[this.currentSong].classList.add("active");
+  },
+
+  scrollToActiveSong: function () {
+    const _this = this;
+    setTimeout(() => {
+      $(".song.active").scrollIntoView({
+        behavior: "smooth",
+        block: `${_this.currentSong <= 4 ? "center" : "nearest"}`,
+      });
+    }, 300);
   },
 
   loadCurrentSong: function () {
