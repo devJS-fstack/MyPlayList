@@ -71,8 +71,8 @@ const app = {
   ],
 
   render: function () {
-    const htmls = this.songs.map((song) => {
-      return `<div class="song">
+    const htmls = this.songs.map((song, index) => {
+      return `<div class="song" data-index=${index}>
         <div
           class="thumb"
           style="
@@ -161,28 +161,15 @@ const app = {
       if (_this.isRandom) _this.playRandomSong();
       else _this.nextSong();
       audio.play();
-      const song = $$(".song");
-      for (var i = 0; i < song.length; i++) {
-        if (song[i].classList.contains("active")) {
-          song[i].classList.remove("active");
-          break;
-        }
-      }
-      song[_this.currentSong].classList.add("active");
       _this.scrollToActiveSong();
+      _this.activeSong();
     };
     prevBtn.onclick = () => {
       if (_this.isRandom) _this.playRandomSong();
       else _this.prevSong();
       audio.play();
-      const song = $$(".song");
-      for (var i = 0; i < song.length; i++) {
-        if (song[i].classList.contains("active")) {
-          song[i].classList.remove("active");
-          break;
-        }
-      }
-      song[_this.currentSong].classList.add("active");
+      _this.scrollToActiveSong();
+      _this.activeSong();
     };
 
     randomBtn.onclick = (e) => {
@@ -208,6 +195,30 @@ const app = {
         audio.play();
       } else nextBtn.click();
     };
+
+    // When click playlist
+    playList.onclick = (e) => {
+      const songNode = e.target.closest(".song:not(.active)");
+      if (songNode || e.target.closest(".option")) {
+        if (songNode) {
+          _this.currentSong = songNode.dataset.index;
+          _this.loadCurrentSong();
+          _this.activeSong();
+          audio.play();
+        }
+      }
+    };
+  },
+
+  activeSong: function () {
+    const song = $$(".song");
+    for (var i = 0; i < song.length; i++) {
+      if (song[i].classList.contains("active")) {
+        song[i].classList.remove("active");
+        break;
+      }
+    }
+    song[this.currentSong].classList.add("active");
   },
 
   activeListSong: function () {
